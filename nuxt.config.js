@@ -4,7 +4,7 @@ export default {
 
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    title: 'test-app',
+    title: 'MovieApp',
     htmlAttrs: {
       lang: 'en'
     },
@@ -15,7 +15,7 @@ export default {
       { name: 'format-detection', content: 'telephone=no' }
     ],
     link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+      { rel: 'icon', type: 'image/x-icon', href: 'http://localhost:3000/_nuxt/assets/images/movieHero.jpg' },
       {rel: 'stylesheet' , href: "https://fonts.googleapis.com/css?family=Tangerine"}
     ]
   },

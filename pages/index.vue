@@ -23,7 +23,7 @@
     <!-- movies section -->
     <div class="movies container">
       <div class="movie-grid">
-        <div class="movie" v-for="(item, index) in movies" :key="index">
+        <div class="movie" v-for="(item, index) in movies" :key="index" >
           <div class="movie-img">
             <img :src=" `https://image.tmdb.org/t/p/w500/${item.poster_path}` "/>
             <div class="review">{{ item.vote_average }}</div>
@@ -44,9 +44,10 @@
             </p>
             <nuxt-link
               class="button button-light"
-              :to="{ name: 'movies-movieid', params: { movieid: item.id } }"
+              :to="{ name: 'movies-movieid', params:{ movieid: item.id } }"
               >Get More Info</nuxt-link
             >
+          
           </div>
         </div>
       </div>

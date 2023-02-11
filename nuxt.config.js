@@ -42,6 +42,7 @@ export default {
     'bootstrap-vue/nuxt',
 
     '@nuxtjs/axios',
+    // '@nuxtjs/router',
   ],
 
 

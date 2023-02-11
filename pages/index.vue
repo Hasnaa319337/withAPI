@@ -12,7 +12,8 @@
         class="search-input"
         placeholder="search"
         name="search"
-        v-model="searchInput"
+        @keyup.enter="$fetch"
+        v-model.lazy="searchInput"
       />
       <button @click="clearSearch" class="button" v-show="searchInput !== ''">
         clear search
@@ -20,12 +21,13 @@
     </div>
     <!-- end search -->
 
-    <!-- movies section -->
     <div class="movies container">
-      <div class="movie-grid">
-        <div class="movie" v-for="(item, index) in movies" :key="index" >
+      <!-- movies section -->
+
+      <div class="movie-grid" v-if="searchInput == ' ' ">
+        <div class="movie" v-for="(item, index) in movies" :key="index">
           <div class="movie-img">
-            <img :src=" `https://image.tmdb.org/t/p/w500/${item.poster_path}` "/>
+            <img :src="`https://image.tmdb.org/t/p/w500/${item.poster_path}`" />
             <div class="review">{{ item.vote_average }}</div>
             <div class="overview">{{ item.overview }}</div>
           </div>
@@ -35,56 +37,112 @@
             <p class="release">
               Released:
               {{
-                new Date(item.release_date).toLocaleString('en-us', {
-                  month: 'long',
-                  day: 'numeric',
-                  year: 'numeric',
+                new Date(item.release_date).toLocaleString("en-us", {
+                  month: "long",
+                  day: "numeric",
+                  year: "numeric",
                 })
               }}
             </p>
             <nuxt-link
               class="button button-light"
-              :to="{ name: 'movies-movieid', params:{ movieid: item.id } }"
+              :to="{ name: 'movies-movieid', params: { movieid: item.id } }"
               >Get More Info</nuxt-link
             >
-          
           </div>
         </div>
       </div>
-    </div>
+      <!-- end movies section -->
 
-    <!-- end movies section -->
+      <!-- start searchMovies section -->
+      <div class="movie-grid" v-else>
+        <div class="movie" v-for="(item, index) in searchedMovies" :key="index">
+          <div class="movie-img">
+            <img :src="`https://image.tmdb.org/t/p/w500/${item.poster_path}`" />
+            <div class="review">{{ item.vote_average }}</div>
+            <div class="overview">{{ item.overview }}</div>
+          </div>
+
+          <div class="info">
+            <p class="title">{{ item.title }}</p>
+            <p class="release">
+              Released:
+              {{
+                new Date(item.release_date).toLocaleString("en-us", {
+                  month: "long",
+                  day: "numeric",
+                  year: "numeric",
+                })
+              }}
+            </p>
+            <nuxt-link
+              class="button button-light"
+              :to="{ name: 'movies-movieid', params: { movieid: item.id } }"
+              >Get More Info</nuxt-link
+            >
+          </div>
+        </div>
+      </div>
+      <!-- end searchMovies section -->
+    </div>
   </section>
 </template>
 <script>
 import Hero from "~/components/Hero";
-
+import axios from "axios";
 export default {
   components: {
     Hero,
   },
-
-  async asyncData({ $axios }) {
-    const movies = await $axios.$get(
-      `https://api.themoviedb.org/3/movie/now_playing?api_key=37ed43a4f8eaa2abd75f9283692947bc&language=en-US&page=1`
-    );
-    return {
-      movies: movies.results,
-    };
-
-  },
-
   data() {
     return {
-      searchInput: "",
+      movies: [],
+      searchInput: " ",
       searchedMovies: [],
     };
   },
 
+  async fetch() {
+    if (this.searchInput === " ") {
+      await this.asyncData();
+      return;
+    }
+
+    if (this.searchInput !== " ") {
+      await this.searchMovies();
+      return;
+    }
+  },
+  fetchDelay: 1000,
+
   methods: {
+    async asyncData() {
+      const data = axios.get(
+        `https://api.themoviedb.org/3/movie/now_playing?api_key=37ed43a4f8eaa2abd75f9283692947bc&language=en-US&page=1`
+      );
+      const result = await data;
+      result.data.results.forEach((movie) => {
+        this.movies.push(movie);
+      });
+    },
+
+    async searchMovies() {
+      const data = axios.get(
+        `https://api.themoviedb.org/3/search/movie?api_key=37ed43a4f8eaa2abd75f9283692947bc&language=en-US&page=1&query=${this.searchInput}`
+      );
+      const result = await data;
+      result.data.results.forEach((movie) => {
+        this.searchedMovies.push(movie);
+      });
+    },
     clearSearch() {
       this.searchInput = "";
       this.searchedMovies = [];
+    },
+  },
+  watch: {
+    searchInput() {
+      console.log(this.searchInput);
     },
   },
 };
@@ -105,7 +163,6 @@ export default {
 .movie-img {
   position: relative;
   overflow: hidden;
-
 }
 .movie-img img {
   display: block;

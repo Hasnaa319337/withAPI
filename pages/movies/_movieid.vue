@@ -1,4 +1,13 @@
-<template>
+<template
+  data-aos="fade-in"
+  data-aos-offset="200"
+  data-aos-delay="100"
+  data-aos-duration="1000"
+  data-aos-easing="ease-in-out"
+  data-aos-mirror="true"
+  data-aos-once="true"
+  data-aos-anchor-placement="top-center"
+>
   <!-- Movie Info -->
   <div class="app">
     <div class="single-movie container">
@@ -48,30 +57,26 @@
 import axios from "axios";
 
 export default {
-
   async fetch() {
     await this.asyncData();
   },
 
-
   // delay for fetching
   fetchDelay: 1000,
 
-
   data() {
     return {
-      item: ' ',
+      item: " ",
     };
   },
   methods: {
-    
-  async asyncData() {
-    const data = axios.get(
-      `https://api.themoviedb.org/3/movie/646389?api_key=37ed43a4f8eaa2abd75f9283692947bc&language=en-US`
-    );
-    const result = await data;
-    this.item = result.data;
-  },
+    async asyncData() {
+      const data = axios.get(
+        `https://api.themoviedb.org/3/movie/${this.$route.params.movieid}?api_key=37ed43a4f8eaa2abd75f9283692947bc&language=en-US`
+      );
+      const result = await data;
+      this.item = result.data;
+    },
   },
 };
 </script>
@@ -107,11 +112,11 @@ export default {
     align-items: flex-start;
   }
 }
-.movie-img{
+.movie-img {
   min-height: 500px;
   width: 100%;
 }
-.movie-img img{
+.movie-img img {
   width: 100%;
   height: 100%;
 }
